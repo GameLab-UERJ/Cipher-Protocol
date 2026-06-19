@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://3kilhde4l4f1"]
+[gd_scene format=3 uid="uid://3kilhde4l4f1"]
 
 [ext_resource type="Script" uid="uid://d1303twrbeku6" path="res://GameCore/Scripts/Menus/options_menu.gd" id="1_ohk76"]
 [ext_resource type="Texture2D" uid="uid://bad1s7p5v0tw1" path="res://GameCore/Sprites/background_main.jpg" id="3_qx36l"]
@@ -63,7 +63,7 @@ _data = {
 &"reveal": SubResource("Animation_tjiy5")
 }
 
-[node name="OptionsMenu" type="Control"]
+[node name="OptionsMenu" type="Control" unique_id=1664875851]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -72,14 +72,14 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_ohk76")
 
-[node name="BG" type="TextureRect" parent="."]
-layout_mode = 2
+[node name="BG" type="TextureRect" parent="." unique_id=1952553330]
+layout_mode = 0
 offset_right = 1152.0
 offset_bottom = 648.0
 texture = ExtResource("3_qx36l")
 expand_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1788252208]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -94,19 +94,19 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
 
-[node name="fullscreen_check" type="CheckButton" parent="VBoxContainer"]
+[node name="fullscreen_check" type="CheckButton" parent="VBoxContainer" unique_id=473098404]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 theme = ExtResource("4_o4nmk")
 text = "Tela Cheia"
 alignment = 1
 
-[node name="HSeparator2" type="HSeparator" parent="VBoxContainer"]
+[node name="HSeparator2" type="HSeparator" parent="VBoxContainer" unique_id=1056322873]
 custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxEmpty_ji00l")
 
-[node name="Label" type="Label" parent="VBoxContainer"]
+[node name="Label" type="Label" parent="VBoxContainer" unique_id=82011336]
 layout_mode = 2
 theme = ExtResource("4_o4nmk")
 text = "Volume Principal:"
@@ -114,17 +114,17 @@ label_settings = SubResource("LabelSettings_qx36l")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="HSlider" type="HSlider" parent="VBoxContainer"]
+[node name="HSlider" type="HSlider" parent="VBoxContainer" unique_id=1752998561]
 layout_mode = 2
 theme = SubResource("Theme_qx36l")
 rounded = true
 
-[node name="HSeparator3" type="HSeparator" parent="VBoxContainer"]
+[node name="HSeparator3" type="HSeparator" parent="VBoxContainer" unique_id=1397045077]
 custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxEmpty_ji00l")
 
-[node name="return_btn" type="Button" parent="VBoxContainer"]
+[node name="return_btn" type="Button" parent="VBoxContainer" unique_id=266978959]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 size_flags_vertical = 3
@@ -132,11 +132,9 @@ theme = ExtResource("4_o4nmk")
 text = "Voltar ao Menu Principal
 "
 
-[node name="anim" type="AnimationPlayer" parent="."]
-libraries = {
-&"": SubResource("AnimationLibrary_2ghyc")
-}
-autoplay = "reveal"
+[node name="anim" type="AnimationPlayer" parent="." unique_id=958363292]
+libraries/ = SubResource("AnimationLibrary_2ghyc")
+autoplay = &"reveal"
 
 [connection signal="toggled" from="VBoxContainer/fullscreen_check" to="." method="_on_fullscreen_check_toggled"]
 [connection signal="value_changed" from="VBoxContainer/HSlider" to="." method="_on_h_slider_value_changed"]
