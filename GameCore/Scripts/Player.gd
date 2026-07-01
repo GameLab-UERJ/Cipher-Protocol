@@ -5,7 +5,7 @@ class_name Player
 @export var projectile_scene: PackedScene = preload("res://GameCore/Scenes/Projectile.tscn")
 
 # --- STATS DA ARMA BÁSICA ---
-@export var cooldown: float = 1.5 
+@export var cooldown: float = 1.5
 @export var damage: float = 10.0
 @export var crit_chance: float = 0.05
 @export var crit_multiplier: float = 0.5
@@ -47,6 +47,13 @@ func _physics_process(delta: float) -> void:
 	_find_nearest_enemy()
 	_aim_upgrade_weapons()
 
+# --- MOVIMENTO CONTÍNUO PELO MOUSE ---
+	# Enquanto o botão esquerdo estiver pressionado, a posição-alvo
+	# é atualizada constantemente e autoriza o movimento.
+	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+		target_position = get_global_mouse_position()
+		move_to_target = true
+
 	# --- MOVIMENTO POR TECLADO ---
 	var input_x = Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
 	var input_y = Input.get_action_strength("move_down") - Input.get_action_strength("move_up")
@@ -75,7 +82,7 @@ func _physics_process(delta: float) -> void:
 		_damage_cooldown -= delta
 		if _damage_cooldown <= 0:
 			_is_taking_damage = false
-	
+
 	_update_animation()
 
 	_fire_elapsed += delta
@@ -88,7 +95,7 @@ func _update_animation() -> void:
 		if animated_sprite.animation != "hurt":
 			animated_sprite.play("hurt")
 		return
-	
+
 	if _input_vec.length() > 0.1:
 		animated_sprite.play("run")
 		if _input_vec.x != 0:
@@ -99,14 +106,14 @@ func _update_animation() -> void:
 func _shoot() -> void:
 	if projectile_scene == null or nearest_enemy == null or not is_instance_valid(nearest_enemy):
 		return
-		
+
 	var p = projectile_scene.instantiate()
-	
+
 	if p is Projectile:
 		p.damage = damage * calculate_crit()
-	
+
 	var dir: Vector2 = (nearest_enemy.global_position - global_position).normalized()
-	
+
 	p.global_position = global_position
 	if p.has_method("set_direction"):
 		p.call("set_direction", dir)
@@ -126,7 +133,7 @@ func calculate_crit() -> float:
 func _aim_upgrade_weapons() -> void:
 	var target_rotation := global_rotation
 	var has_target: bool = false # Adiciona uma flag para saber se há um alvo
-	
+
 	if nearest_enemy != null and is_instance_valid(nearest_enemy):
 		var dir: Vector2 = (nearest_enemy.global_position - global_position).normalized()
 		target_rotation = dir.angle()
@@ -135,7 +142,7 @@ func _aim_upgrade_weapons() -> void:
 	for weapon in get_tree().get_nodes_in_group("weapon"):
 		if weapon.get_parent() == self and weapon is Node2D:
 			weapon.global_rotation = target_rotation
-			
+
 			# A MUDANÇA PRINCIPAL:
 			# Ativa ou desativa o processamento (_process) da arma.
 			# Se não há alvo (has_target = false), o _process da arma para,
@@ -146,10 +153,10 @@ func _aim_upgrade_weapons() -> void:
 func _find_nearest_enemy() -> void:
 	if detection_area == null:
 		return
-		
+
 	var bodies = detection_area.get_overlapping_bodies()
 	var min_dist_sq = INF
-	nearest_enemy = null 
+	nearest_enemy = null
 
 	for body in bodies:
 		if body.is_in_group("enemy"):
@@ -161,14 +168,15 @@ func _find_nearest_enemy() -> void:
 # ... (O resto das suas funções _ensure_input_actions, die, etc. permanecem iguais) ...
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-		target_position = get_global_mouse_position()
-		move_to_target = true
 
 		# --- EFEITO DE CLIQUE ---
 		var circle := ColorRect.new()
 		circle.color = Color(1, 1, 1, 0.8)  # branco semi-transparente
 		circle.size = Vector2(10, 10)       # começa pequeno
-		circle.position = target_position - circle.size / 2
+		
+		var click_pos = get_global_mouse_position()
+		circle.position = click_pos - circle.size / 2
+		
 		circle.scale = Vector2(0.3, 0.3)
 		circle.pivot_offset = circle.size / 2
 		circle.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -182,7 +190,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		tween.tween_property(circle, "modulate:a", 0.0, 0.25)
 		tween.tween_callback(func(): circle.queue_free())
 
-			
+
 func _ensure_input_actions() -> void:
 	_ensure_action_key("move_up", KEY_W)
 	_ensure_action_key("move_up", KEY_UP)
